@@ -17,8 +17,12 @@
 
 #include "./ds18b20/bsp_ds18b20.h"
 #include "./systick/bsp_SysTick.h"
+#include "./dwt_delay/core_delay.h" 
 
+/* 可以在下面的宏定义中把后面的延时函数替换换SysTick的延时函数，就是想用那个就换成那个的 */
 
+#define DHT11_DELAY_US(us)  CPU_TS_Tmr_Delay_US(us)
+#define DHT11_DELAY_MS(ms)  CPU_TS_Tmr_Delay_MS(ms)
 
 static void                           DS18B20_GPIO_Config                       ( void );
 static void                           DS18B20_Mode_IPU                          ( void );
@@ -135,13 +139,13 @@ static void DS18B20_Rst(void)
 	
 	DS18B20_DQ_0;
 	/* 主机至少产生480us的低电平复位信号 */
-	Delay_us(750);
+	DHT11_DELAY_US(750);
 	
 	/* 主机在产生复位信号后，需将总线拉高 */
 	DS18B20_DQ_1;
 	
 	/*从机接收到主机的复位信号后，会在15~60us后给主机发一个存在脉冲*/
-	Delay_us(15);
+	DHT11_DELAY_US(15);
 }
 
 
@@ -163,7 +167,7 @@ static uint8_t DS18B20_Presence(void)
 	while( DS18B20_DQ_IN() && pulse_time<100 )
 	{
 		pulse_time++;
-		Delay_us(1);
+		DHT11_DELAY_US(1);
 	}	
 	/* 经过100us后，存在脉冲都还没有到来*/
 	if( pulse_time >=100 )
@@ -175,7 +179,7 @@ static uint8_t DS18B20_Presence(void)
 	while( !DS18B20_DQ_IN() && pulse_time<240 )
 	{
 		pulse_time++;
-		Delay_us(1);
+		DHT11_DELAY_US(1);
 	}	
 	if( pulse_time >=240 )
 		return 1;
@@ -195,11 +199,11 @@ static uint8_t DS18B20_ReadBit(void)
 	DS18B20_Mode_Out_PP();
 	/* 读时间的起始：必须由主机产生 >1us <15us 的低电平信号 */
 	DS18B20_DQ_0;
-	Delay_us(10);
+	DHT11_DELAY_US(10);
 	
 	/* 设置成输入，释放总线，由外部上拉电阻将总线拉高 */
 	DS18B20_Mode_IPU();
-	//Delay_us(2);
+	//DHT11_DELAY_US(2);
 	
 	if( DS18B20_DQ_IN() == SET )
 		dat = 1;
@@ -207,7 +211,7 @@ static uint8_t DS18B20_ReadBit(void)
 		dat = 0;
 	
 	/* 这个延时参数请参考时序图 */
-	Delay_us(45);
+	DHT11_DELAY_US(45);
 	
 	return dat;
 }
@@ -247,20 +251,20 @@ static void DS18B20_WriteByte(uint8_t dat)
 		{			
 			DS18B20_DQ_0;
 			/* 1us < 这个延时 < 15us */
-			Delay_us(8);
+			DHT11_DELAY_US(8);
 			
 			DS18B20_DQ_1;
-			Delay_us(58);
+			DHT11_DELAY_US(58);
 		}		
 		else
 		{			
 			DS18B20_DQ_0;
 			/* 60us < Tx 0 < 120us */
-			Delay_us(70);
+			DHT11_DELAY_US(70);
 			
 			DS18B20_DQ_1;			
 			/* 1us < Trec(恢复时间) < 无穷大*/
-			Delay_us(2);
+			DHT11_DELAY_US(2);
 		}
 	}
 }

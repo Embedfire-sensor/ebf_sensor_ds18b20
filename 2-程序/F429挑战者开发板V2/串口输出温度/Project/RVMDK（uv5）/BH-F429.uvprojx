@@ -10,6 +10,7 @@
       <TargetName>DS18B20温度传感器</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
+      <pCCUsed>5060422::V5.06 update 4 (build 422)::ARMCC</pCCUsed>
       <TargetOption>
         <TargetCommonOption>
           <Device>STM32F429IGTx</Device>
@@ -677,6 +678,11 @@
               <FileName>bsp_ds18b20.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\User\DS18B20\bsp_ds18b20.c</FilePath>
+            </File>
+            <File>
+              <FileName>core_delay.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\User\dwt_delay\core_delay.c</FilePath>
             </File>
           </Files>
         </Group>

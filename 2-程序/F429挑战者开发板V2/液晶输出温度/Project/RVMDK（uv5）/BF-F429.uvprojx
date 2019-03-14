@@ -704,6 +704,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\User\systick\bsp_SysTick.c</FilePath>
             </File>
+            <File>
+              <FileName>core_delay.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\User\dwt_delay\core_delay.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
