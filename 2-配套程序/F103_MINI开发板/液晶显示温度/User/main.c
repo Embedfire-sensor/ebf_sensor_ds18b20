@@ -20,8 +20,10 @@
 #include "./led/bsp_led.h"
 #include "./usart/bsp_usart.h"
 #include "./ds18b20/bsp_ds18b20.h"
+#include "./lcd/bsp_ili9341_lcd.h"
 
-
+/* 显示缓冲区 */
+char dis_buf[1024];
 
 /**
   * @brief  主函数
@@ -30,41 +32,58 @@
   */
 int main(void)
 {	
+  float temperature;
+  
 	uint8_t uc, ucDs18b20Id [ 8 ];
-	
+  uint8_t DS18B20Id_str[20];
 	
 	/* 配置SysTick 为1us中断一次 */
 	SysTick_Init();
 	
+  //LCD 初始化
+	ILI9341_Init (); 
+ //其中0、3、5、6 模式适合从左至右显示文字，
+ //不推荐使用其它模式显示文字	其它模式显示文字会有镜像效果			
+ //其中 6 模式为大部分液晶例程的默认显示方向  
+	ILI9341_GramScan ( 6 );
+
+  ILI9341_Clear(0,0,LCD_X_LENGTH,LCD_Y_LENGTH);	/* 清屏，显示全黑 */
+  
 	/* LED 端口初始化 */
 	LED_GPIO_Config();
 	
 	USART_Config();	//初始化串口1
 	
 	
-	printf("\r\n this is a ds18b20 test demo \r\n");
+	ILI9341_DispStringLine_EN(LINE(0),"this is a ds18b20 test demo");
 	
 	while( DS18B20_Init() )	
-		printf("\r\n no ds18b20 exit \r\n");
+		ILI9341_DispStringLine_EN(LINE(1),"no ds18b20 exit");
 	
-	printf("\r\n ds18b20 exit \r\n");
-	
-	
+	ILI9341_DispStringLine_EN(LINE(1),"ds18b20 ok");
+
 	DS18B20_ReadId ( ucDs18b20Id  );           // 读取 DS18B20 的序列号
 	
-	printf("\r\nDS18B20的序列号是： 0x");
+	for ( uc = 0; uc < 8; uc++ )             // 打印 DS18B20 的序列号
+  {    
+    sprintf((char *)&DS18B20Id_str[2*uc], "%.2x",ucDs18b20Id[uc]);  
+    
+    if(uc == 7)
+      DS18B20Id_str[17] = '\0';        
+  }
 
-	for ( uc = 0; uc < 8; uc ++ )             // 打印 DS18B20 的序列号
-	 printf ( "%.2x", ucDs18b20Id [ uc ] );
-	
+  sprintf((char*)dis_buf,"DS18B20 serial num:0x%s",DS18B20Id_str);  
+  ILI9341_DispStringLine_EN(LINE(2),dis_buf);
 	
 	for(;;)
 	{	
-		printf ( "\r\n获取该序列号器件的温度： %.1f\r\n", DS18B20_GetTemp_MatchRom ( ucDs18b20Id ) );		// 打印通过 DS18B20 序列号获取的温度值	
-		
-		Delay_ms(1000);		/* 1s 读取一次温度值 */
-		
-		LED2_TOGGLE;
+		temperature=DS18B20_GetTemp_MatchRom(ucDs18b20Id);
+		printf("DS18B20读取到的温度为：%0.3f\n",temperature);
+        
+    sprintf((char*)dis_buf,"T:%0.3f degree Celsius",temperature);
+    ILI9341_DispStringLine_EN(LINE(5),dis_buf);
+
+    Delay_ms(1000);
 		
 	}	 
 	
