@@ -105,9 +105,15 @@ int main(void)
 				temperature=DS18B20_Get_Temp();
 				PRINTF("DS18B20读取到的温度为：%0.3f\n",temperature);
 				sprintf((char*)dis_buf,"Temperature:   %0.3f   degree Celsius",temperature);
+        PRINTF("str：%s\n",dis_buf);
 				LCD_DisplayStringLine(LINE(5),dis_buf);
 				Delay_ms(1000);
 		}  
 
 }
 /****************************END OF FILE**********************/
+
+
+
+
+
