@@ -42,7 +42,7 @@ AT_NONCACHEABLE_SECTION_ALIGN( pixel_t s_psBufferLcd[2][LCD_PIXEL_HEIGHT][LCD_PI
 /*用于存储当前选择的字体格式*/
 static sFONT *LCD_Currentfonts = &Font16x32;
 /* 用于存储当前字体颜色和字体背景颜色的变量*/
-static pixel_t CurrentTextColor   = CL_BLUE;
+static pixel_t CurrentTextColor   = CL_WHITE;
 static pixel_t CurrentBackColor   = CL_BLACK;
 
 /* 指向当前的显存，由于是地址，所以用32位变量 */
