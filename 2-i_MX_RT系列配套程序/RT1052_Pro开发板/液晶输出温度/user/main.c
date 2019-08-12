@@ -24,6 +24,7 @@
 #include "./ds18b20/bsp_ds18b20.h"
 #include "./lcd/bsp_lcd.h" 
 #include "stdio.h" 
+#include "string.h"
 /*******************************************************************
  * Prototypes
  *******************************************************************/
@@ -33,6 +34,38 @@ __IO float temperature;
 /*******************************************************************
  * Code
  *******************************************************************/
+
+char buffer[30];
+void Float_TO_Char(float slope,char*buffer,int n)  //浮点型数，存储的字符数组，字符数组的长度
+{
+    int temp,i,j;
+    if(slope>=0)//判断是否大于0
+        //buffer[0] = '+';
+				buffer[0] = ' ';
+    else
+    {
+        buffer[0] = '-';
+        slope = -slope;
+    }
+    temp = (int)slope;//取整数部分
+    for(i=0;temp!=0;i++)//计算整数部分的位数
+        temp /=10;
+    temp =(int)slope;
+    for(j=i;j>0;j--)//将整数部分转换成字符串型
+    {
+        buffer[j] = temp%10+'0';
+        temp /=10;
+    }
+    buffer[i+1] = '.';
+    slope -=(int)slope;
+    for(i=i+2;i<n-1;i++)//将小数部分转换成字符串型
+    {
+        slope*=10;
+        buffer[i]=(int)slope+'0';
+        slope-=(int)slope;
+    }
+    buffer[n-1] = '\0';
+}
 
 /**
   * @brief  主函数
@@ -100,14 +133,24 @@ int main(void)
 		PRINTF("\r\nDS18B20的序列号是： 0x%s\r\n",DS18B20Id_str);
 		sprintf((char*)dis_buf,"DS18B20 serial num:0x%s",DS18B20Id_str);  
 		LCD_DisplayStringLine(LINE(4),dis_buf);
+		memset(dis_buf,0,1024);
 		while(1)
 		{
-				temperature=DS18B20_Get_Temp();
-				PRINTF("DS18B20读取到的温度为：%0.3f\n",temperature);
-				sprintf((char*)dis_buf,"Temperature:   %0.3f   degree Celsius",temperature);
-        PRINTF("str：%s\n",dis_buf);
-				LCD_DisplayStringLine(LINE(5),dis_buf);
-				Delay_ms(1000);
+			temperature=DS18B20_Get_Temp();	
+			PRINTF("DS18B20读取到的温度为：%0.3f\n",temperature);
+#if defined(__CC_ARM)
+			sprintf((char*)dis_buf,"Temperature:   %0.3f   degree Celsius",temperature);
+#elif defined(__ICCARM__)
+			/*IAR中的sprintf格式化输出浮点型*/
+			Float_TO_Char(temperature,(char*)buffer,8);
+			strcat((char*)dis_buf,"Temperature:   ");
+			strcat((char*)dis_buf,(char*)buffer);
+			strcat((char*)dis_buf,"   degree Celsius");
+#endif
+			PRINTF("str：%s\n",dis_buf);
+			LCD_DisplayStringLine(LINE(5),dis_buf);
+			memset(dis_buf,0,1024);
+			Delay_ms(1000);
 		}  
 
 }
