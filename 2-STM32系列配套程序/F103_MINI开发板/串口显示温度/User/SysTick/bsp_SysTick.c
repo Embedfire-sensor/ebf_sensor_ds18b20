@@ -55,6 +55,9 @@ void Delay_us(__IO u32 nTime)
 	SysTick->CTRL |=  SysTick_CTRL_ENABLE_Msk;
 
 	while(TimingDelay != 0);
+  
+  // ¹Ø±ÕµÎ´ð¶¨Ê±Æ÷  
+	SysTick->CTRL &= ~ SysTick_CTRL_ENABLE_Msk;
 }
 
 /**
