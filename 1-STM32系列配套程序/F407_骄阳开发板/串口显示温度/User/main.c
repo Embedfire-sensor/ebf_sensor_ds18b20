@@ -32,7 +32,7 @@ int main(void)
 	
   /*初始化USART，配置模式为 115200 8-N-1*/
   Debug_USART_Config();
-  printf("\r\n***野火F407霸天虎 DS18B20 温度传感器实验***\n");
+  printf("\r\n***野火F407骄阳 DS18B20 温度传感器实验***\n");
 	
 	/* 系统定时器初始化 */
 	SysTick_Init();

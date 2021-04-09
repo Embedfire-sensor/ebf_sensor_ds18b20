@@ -12,8 +12,7 @@
 #define      DS18B20_DQ_GPIO_CLK                       RCC_APB2Periph_GPIOB
 
 #define      DS18B20_DQ_GPIO_PORT                      GPIOB
-#define      DS18B20_DQ_GPIO_PIN                       GPIO_Pin_0
-
+#define      DS18B20_DQ_GPIO_PIN                       GPIO_Pin_2
 
 
 /************************** DS18B20 º¯Êýºê¶¨Òå********************************/

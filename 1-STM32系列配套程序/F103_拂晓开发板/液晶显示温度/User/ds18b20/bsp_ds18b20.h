@@ -11,8 +11,8 @@
 #define      DS18B20_DQ_SCK_APBxClock_FUN              RCC_APB2PeriphClockCmd
 #define      DS18B20_DQ_GPIO_CLK                       RCC_APB2Periph_GPIOE
 
-#define      DS18B20_DQ_GPIO_PORT                      GPIOE
-#define      DS18B20_DQ_GPIO_PIN                       GPIO_Pin_6
+#define      DS18B20_DQ_GPIO_PORT                      GPIOB
+#define      DS18B20_DQ_GPIO_PIN                       GPIO_Pin_2
 
 
 
