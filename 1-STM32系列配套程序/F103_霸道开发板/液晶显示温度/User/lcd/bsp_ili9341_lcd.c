@@ -218,7 +218,7 @@ static void ILI9341_GPIO_Config ( void )
   */
 static void ILI9341_FSMC_Config ( void )
 {
-	FSMC_NORSRAMInitTypeDef  FSMC_NORSRAMInitStructure;
+	FSMC_NORSRAMInitTypeDef  FSMC_NORSRAMInitStructure = {0};
 	FSMC_NORSRAMTimingInitTypeDef  readWriteTiming; 	
 	
 	/* Ê¹ÄÜFSMCÊ±ÖÓ*/
